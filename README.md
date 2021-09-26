@@ -1,5 +1,7 @@
 # Shapes
 
+![Demonstration](./docs/demonstration.gif)
+
 Simple 3D objects for your terminal.
 
 Currently, this does not have any [crates.io](https://crates.io) dependencies.
