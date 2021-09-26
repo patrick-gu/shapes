@@ -2,7 +2,7 @@ use crate::{Color, Ray, Transformation, TransformationExt};
 
 /// An object in space that can be hit by a [`Ray`] to possibly produce a [`Hit`].
 pub(crate) trait Hittable {
-    /// Attempts to hit this object given an `incidence` ray of light,
+    /// Attempts to hit this object given an `incidence` ray of light.
     fn hit(&self, incidence: Ray) -> Option<Hit>;
 }
 
