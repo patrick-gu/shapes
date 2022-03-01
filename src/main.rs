@@ -1,3 +1,7 @@
+use std::process;
+
 fn main() {
-    shapes::run();
+    let error = shapes::run();
+    eprintln!("{}", error);
+    process::exit(1);
 }

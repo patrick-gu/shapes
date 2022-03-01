@@ -17,7 +17,11 @@ mod util;
 mod vector;
 mod view;
 
-use std::{f64::consts::TAU, time::Instant};
+use std::{
+    f64::consts::TAU,
+    io::{self, Write},
+    time::Instant,
+};
 
 use self::{
     color::Color,
@@ -34,7 +38,10 @@ use self::{
 };
 
 /// Runs the program.
-pub fn run() {
+pub fn run() -> io::Error {
+    let stdout = io::stdout();
+    let mut stdout = stdout.lock();
+
     let viewport = Viewport {
         camera: Camera {
             focal_len: 0.5,
@@ -48,10 +55,14 @@ pub fn run() {
     let start = Instant::now();
     let phase = |dur| (start.elapsed().as_millis() % dur) as f64 / dur as f64;
 
-    println!("\x1b[2J");
+    if let Err(error) = write!(stdout, "\x1b[2J") {
+        return error;
+    }
 
     loop {
-        println!("\x1b[H");
+        if let Err(error) = write!(stdout, "\x1b[H") {
+            return error;
+        }
 
         let cube = cube()
             .transform(Matrix::scale(Vector(1.3, 1.3, 1.3)))
@@ -70,6 +81,8 @@ pub fn run() {
             .and(torus)
             .transform(Translation(Vector(0.0, 3.0, 0.0)));
 
-        viewport.render(scene);
+        if let Err(error) = viewport.render(&mut stdout, scene) {
+            return error;
+        }
     }
 }

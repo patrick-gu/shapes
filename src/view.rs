@@ -1,3 +1,5 @@
+use std::io;
+
 use crate::{Color, Hittable, Ray, Vector};
 
 /// A camera in a 3D world.
@@ -31,18 +33,18 @@ pub(crate) struct Viewport {
 }
 
 impl Viewport {
-    pub(crate) fn render(&self, scene: impl Hittable) {
+    pub(crate) fn render(&self, mut buf: impl io::Write, scene: impl Hittable) -> io::Result<()> {
         for j in (0..self.height).rev() {
             let v = (j as f64 + 0.5) / self.height as f64;
             for i in 0..self.width {
                 let u = (i as f64 + 0.5) / self.width as f64;
                 match self.camera.project(&scene, u, v) {
-                    Some(color) => print!("{}█", color),
-                    None => print!(" "),
+                    Some(color) => write!(buf, "{}█", color)?,
+                    None => write!(buf, " ")?,
                 }
             }
-            println!()
+            writeln!(buf)?;
         }
-        print!("{}", Color::Reset);
+        write!(buf, "{}", Color::Reset)
     }
 }
