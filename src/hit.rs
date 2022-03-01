@@ -77,7 +77,6 @@ impl<H: Hittable, T: Transformation> Hittable for Transformed<H, T> {
     fn hit(&self, incidence: Ray) -> Option<Hit> {
         self.hittable
             .hit(self.transformation_inverse.transform_ray(incidence))
-            .map(|Hit { color, t }| Hit { color, t })
     }
 }
 
