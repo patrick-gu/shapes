@@ -24,7 +24,8 @@ impl Hittable for Torus {
         let d = 4.0 * o_dot_d * p + 2.0 * four_major_sq * origin.y() * direction.y();
         let e = p.powi(2) - four_major_sq * (self.radius_minor.powi(2) - origin.y().powi(2));
 
-        let solution = IntoIterator::into_iter(solve_quartic(a_3, a_2, d / a, e / a))
+        let solution = solve_quartic(a_3, a_2, d / a, e / a)
+            .into_iter()
             .filter(|n| n.is_finite() && *n >= 0.0)
             .reduce(f64::min);
 
