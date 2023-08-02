@@ -18,6 +18,7 @@ mod vector;
 mod view;
 
 use std::{
+    convert::Infallible,
     f64::consts::TAU,
     io::{self, Write},
     time::Instant,
@@ -39,6 +40,13 @@ use self::{
 
 /// Runs the program.
 pub fn run() -> io::Error {
+    match try_run() {
+        Ok(never) => match never {},
+        Err(error) => error,
+    }
+}
+
+pub fn try_run() -> Result<Infallible, io::Error> {
     let stdout = io::stdout();
     let mut stdout = stdout.lock();
 
@@ -55,14 +63,10 @@ pub fn run() -> io::Error {
     let start = Instant::now();
     let phase = |dur| (start.elapsed().as_millis() % dur) as f64 / dur as f64;
 
-    if let Err(error) = write!(stdout, "\x1b[2J") {
-        return error;
-    }
+    write!(stdout, "\x1b[2J")?;
 
     loop {
-        if let Err(error) = write!(stdout, "\x1b[H") {
-            return error;
-        }
+        write!(stdout, "\x1b[H")?;
 
         let cube = cube()
             .transform(Matrix::scale(Vector(1.3, 1.3, 1.3)))
@@ -81,8 +85,6 @@ pub fn run() -> io::Error {
             .and(torus)
             .transform(Translation(Vector(0.0, 3.0, 0.0)));
 
-        if let Err(error) = viewport.render(&mut stdout, scene) {
-            return error;
-        }
+        viewport.render(&mut stdout, scene)?;
     }
 }
