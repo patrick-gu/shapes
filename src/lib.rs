@@ -86,5 +86,7 @@ pub fn try_run() -> Result<Infallible, io::Error> {
             .transform(Translation(Vector(0.0, 3.0, 0.0)));
 
         viewport.render(&mut stdout, scene)?;
+
+        stdout.flush()?;
     }
 }
